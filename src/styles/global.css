@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  /* Peach - Primary CTA */
+  --color-peach-50: #FFF5F0;
+  --color-peach-100: #FFEDE4;
+  --color-peach-200: #FFDACC;
+  --color-peach-300: #FFC0A8;
+  --color-peach-400: #FFA07A;
+  --color-peach-500: #FF7A4D;
+  --color-peach-600: #E8603A;
+  --color-peach-700: #CC4A28;
+
+  /* Off-white - Background */
+  --color-offwhite: #FAFAF7;
+
+  /* Cream - Cards/Sections */
+  --color-cream-50: #FAF8F5;
+  --color-cream-100: #F5F0EB;
+  --color-cream-200: #EDE6DD;
+  --color-cream-300: #E0D6CA;
+
+  /* Sky blue - Secondary */
+  --color-sky-50: #EDF6FB;
+  --color-sky-100: #D9EDF7;
+  --color-sky-200: #B3DBF0;
+  --color-sky-300: #8CC9E8;
+  --color-sky-400: #66B5DF;
+  --color-sky-500: #4A9FCC;
+  --color-sky-600: #3A7FA3;
+  --color-sky-700: #2B5F7A;
+
+  /* Warm grays - Text */
+  --color-warm-50: #F0EDE8;
+  --color-warm-100: #E0DBD4;
+  --color-warm-200: #C4BCB1;
+  --color-warm-300: #A89E91;
+  --color-warm-400: #8C8174;
+  --color-warm-500: #6B6259;
+  --color-warm-600: #524A42;
+  --color-warm-700: #3D3731;
+
+  /* Sage green - Success */
+  --color-sage-400: #9BB5A7;
+  --color-sage-500: #7A9485;
+  --color-sage-600: #5F7A6A;
+
+  /* Fonts */
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-heading: 'Playfair Display', Georgia, serif;
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-offwhite);
+  color: var(--color-warm-700);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-warm-700);
+  line-height: 1.3;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-peach-500);
+  outline-offset: 2px;
+}

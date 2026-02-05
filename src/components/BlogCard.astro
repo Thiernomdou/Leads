@@ -1,0 +1,49 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  slug: string;
+  publishDate: string;
+  category: string;
+  readingTime: number;
+}
+
+const { title, description, slug, publishDate, category, readingTime } = Astro.props;
+
+const formattedDate = new Date(publishDate).toLocaleDateString('fr-FR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="group bg-white rounded-2xl border border-cream-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all">
+  <a href={`/blog/${slug}`} class="block p-6 sm:p-8">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="px-3 py-1 bg-peach-50 text-peach-600 text-xs font-medium rounded-full">
+        {category}
+      </span>
+      <span class="text-warm-400 text-xs">{readingTime} min</span>
+    </div>
+
+    <h2 class="font-heading text-xl sm:text-2xl font-semibold text-warm-700 mb-3 group-hover:text-peach-500 transition-colors leading-snug">
+      {title}
+    </h2>
+
+    <p class="text-warm-500 text-sm leading-relaxed mb-4 line-clamp-3">
+      {description}
+    </p>
+
+    <div class="flex items-center justify-between">
+      <time datetime={publishDate} class="text-warm-400 text-xs">
+        {formattedDate}
+      </time>
+      <span class="text-peach-500 text-sm font-medium group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+        Lire
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </span>
+    </div>
+  </a>
+</article>

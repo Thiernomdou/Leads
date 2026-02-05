@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { siteConfig } from '../data/site-config';
+---
+
+<BaseLayout
+  title="Contact - Prendre rendez-vous"
+  description="Prenez rendez-vous avec une psychologue specialisee TCA a Lyon. Premier echange confidentiel et sans engagement."
+>
+  <section class="py-16 sm:py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h1 class="font-heading text-4xl sm:text-5xl font-bold text-warm-700 mb-6">
+          Prenons contact
+        </h1>
+        <p class="text-lg text-warm-500 max-w-2xl mx-auto">
+          Le premier pas est le plus courageux. Contactez-moi pour un premier echange
+          confidentiel et sans engagement.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <!-- Form -->
+        <div class="lg:col-span-3">
+          <LeadForm sourcePage="contact" />
+        </div>
+
+        <!-- Contact Info -->
+        <div class="lg:col-span-2 space-y-8">
+          <!-- Phone -->
+          <div class="bg-white rounded-2xl border border-cream-200 p-6">
+            <h3 class="font-heading text-lg font-semibold text-warm-700 mb-3">
+              Par telephone
+            </h3>
+            <a
+              href={`tel:${siteConfig.phone.replace(/\s/g, '')}`}
+              class="text-peach-500 text-lg font-medium hover:text-peach-600 transition-colors"
+            >
+              {siteConfig.phone}
+            </a>
+            <p class="text-warm-400 text-sm mt-1">
+              {siteConfig.openingHours.days}, {siteConfig.openingHours.hours}
+            </p>
+          </div>
+
+          <!-- Email -->
+          <div class="bg-white rounded-2xl border border-cream-200 p-6">
+            <h3 class="font-heading text-lg font-semibold text-warm-700 mb-3">
+              Par email
+            </h3>
+            <a
+              href={`mailto:${siteConfig.email}`}
+              class="text-peach-500 font-medium hover:text-peach-600 transition-colors break-all"
+            >
+              {siteConfig.email}
+            </a>
+          </div>
+
+          <!-- Address -->
+          <div class="bg-white rounded-2xl border border-cream-200 p-6">
+            <h3 class="font-heading text-lg font-semibold text-warm-700 mb-3">
+              Au cabinet
+            </h3>
+            <p class="text-warm-500">
+              {siteConfig.address.street}<br />
+              {siteConfig.address.postalCode} {siteConfig.address.city}
+            </p>
+            <p class="text-warm-400 text-sm mt-2">
+              {siteConfig.openingHours.note}
+            </p>
+          </div>
+
+          <!-- Reassurance -->
+          <div class="bg-cream-50 rounded-2xl border border-cream-200 p-6">
+            <h3 class="font-heading text-lg font-semibold text-warm-700 mb-3">
+              A quoi s'attendre ?
+            </h3>
+            <ul class="space-y-2 text-sm text-warm-500">
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Premier echange gratuit et sans engagement
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Stricte confidentialite
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Reponse sous 24 heures
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Aucun jugement, un espace d'ecoute bienveillant
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

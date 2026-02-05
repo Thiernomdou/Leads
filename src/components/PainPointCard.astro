@@ -1,0 +1,27 @@
+---
+interface Props {
+  quote: string;
+  description: string;
+  index: number;
+}
+
+const { quote, description, index } = Astro.props;
+
+const colors = [
+  'border-peach-200 bg-peach-50/50',
+  'border-sky-200 bg-sky-50/50',
+  'border-cream-300 bg-cream-50',
+  'border-peach-200 bg-peach-50/50',
+  'border-sky-200 bg-sky-50/50',
+];
+const colorClass = colors[index % colors.length];
+---
+
+<div class:list={['rounded-2xl border p-6 sm:p-8 transition-all hover:shadow-lg hover:-translate-y-1', colorClass]}>
+  <blockquote class="font-heading text-lg sm:text-xl text-warm-700 mb-4 italic">
+    &laquo; {quote} &raquo;
+  </blockquote>
+  <p class="text-warm-500 text-sm leading-relaxed">
+    {description}
+  </p>
+</div>

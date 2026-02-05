@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime());
+---
+
+<BaseLayout
+  title="Ressources sur les TCA - Blog"
+  description="Articles et ressources pour comprendre les troubles du comportement alimentaire : anorexie, boulimie, hyperphagie. Par une psychologue specialisee TCA a Lyon."
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-offwhite via-cream-50 to-sky-50 py-16 sm:py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="font-heading text-4xl sm:text-5xl font-bold text-warm-700 mb-6">
+        Ressources & Articles
+      </h1>
+      <p class="text-lg text-warm-500 max-w-2xl mx-auto">
+        Des articles pour mieux comprendre les troubles du comportement alimentaire,
+        les mecanismes en jeu, et les chemins possibles vers la guerison.
+      </p>
+    </div>
+  </section>
+
+  <!-- Articles -->
+  <section class="py-16 sm:py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {posts.map((post) => (
+          <BlogCard
+            title={post.data.title}
+            description={post.data.description}
+            slug={post.id.replace(/\.md$/, '')}
+            publishDate={post.data.publishDate}
+            category={post.data.category}
+            readingTime={post.data.readingTime}
+          />
+        ))}
+      </div>
+
+      {posts.length === 0 && (
+        <p class="text-center text-warm-400 text-lg">
+          Aucun article pour le moment. Revenez bientot !
+        </p>
+      )}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 bg-cream-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="font-heading text-2xl sm:text-3xl font-bold text-warm-700 mb-4">
+        Ces articles vous parlent ?
+      </h2>
+      <p class="text-warm-500 text-lg mb-8 max-w-2xl mx-auto">
+        Si vous vous reconnaissez dans ces descriptions, un accompagnement psychologique
+        peut vous aider. Contactez-moi pour un premier echange.
+      </p>
+      <a
+        href="/contact"
+        class="inline-flex items-center px-8 py-4 bg-peach-500 text-white font-semibold rounded-full hover:bg-peach-600 transition-all hover:shadow-lg"
+      >
+        Prendre rendez-vous
+      </a>
+    </div>
+  </section>
+</BaseLayout>

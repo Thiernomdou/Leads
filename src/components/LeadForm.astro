@@ -1,0 +1,11 @@
+---
+import LeadFormClient from './LeadFormClient';
+
+interface Props {
+  sourcePage: string;
+}
+
+const { sourcePage } = Astro.props;
+---
+
+<LeadFormClient client:load sourcePage={sourcePage} />

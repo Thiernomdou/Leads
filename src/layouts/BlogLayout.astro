@@ -1,0 +1,113 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
+import { siteConfig } from '../data/site-config';
+
+interface Props {
+  title: string;
+  description: string;
+  publishDate: string;
+  updatedDate?: string;
+  author: string;
+  category: string;
+  tags: string[];
+  readingTime: number;
+}
+
+const { title, description, publishDate, updatedDate, author, category, tags, readingTime } = Astro.props;
+
+const formattedDate = new Date(publishDate).toLocaleDateString('fr-FR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={description} ogType="article" schemaType="blog-post">
+  <article class="py-12 sm:py-20">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <!-- Breadcrumb -->
+      <nav class="mb-8 text-sm text-warm-400" aria-label="Fil d'Ariane">
+        <ol class="flex items-center gap-2">
+          <li><a href="/" class="hover:text-peach-500 transition-colors">Accueil</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="/blog" class="hover:text-peach-500 transition-colors">Blog</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="text-warm-600 truncate">{title}</li>
+        </ol>
+      </nav>
+
+      <!-- Header -->
+      <header class="mb-10">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="px-3 py-1 bg-peach-50 text-peach-600 text-xs font-medium rounded-full">
+            {category}
+          </span>
+          <span class="text-warm-400 text-sm">{readingTime} min de lecture</span>
+        </div>
+
+        <h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-warm-700 mb-6 leading-tight">
+          {title}
+        </h1>
+
+        <p class="text-lg text-warm-500 leading-relaxed mb-6">
+          {description}
+        </p>
+
+        <div class="flex items-center gap-4 text-sm text-warm-400 border-t border-cream-200 pt-6">
+          <span>Par {author}</span>
+          <span aria-hidden="true">·</span>
+          <time datetime={publishDate}>{formattedDate}</time>
+          {updatedDate && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>Mis a jour le {new Date(updatedDate).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </>
+          )}
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="prose prose-warm max-w-none
+        prose-headings:font-heading prose-headings:text-warm-700
+        prose-h2:text-2xl prose-h2:sm:text-3xl prose-h2:mt-12 prose-h2:mb-6
+        prose-h3:text-xl prose-h3:sm:text-2xl prose-h3:mt-8 prose-h3:mb-4
+        prose-p:text-warm-600 prose-p:leading-relaxed
+        prose-li:text-warm-600
+        prose-strong:text-warm-700
+        prose-a:text-peach-500 prose-a:no-underline hover:prose-a:text-peach-600 hover:prose-a:underline
+        prose-blockquote:border-peach-300 prose-blockquote:bg-peach-50/30 prose-blockquote:rounded-r-lg prose-blockquote:py-1
+      ">
+        <slot />
+      </div>
+
+      <!-- Tags -->
+      <div class="mt-12 pt-8 border-t border-cream-200">
+        <div class="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span class="px-3 py-1 bg-cream-100 text-warm-500 text-sm rounded-full">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-12 bg-gradient-to-r from-peach-50 to-sky-50 rounded-2xl p-8 sm:p-10 text-center">
+        <h2 class="font-heading text-2xl font-bold text-warm-700 mb-4">
+          Vous souhaitez en parler ?
+        </h2>
+        <p class="text-warm-500 mb-6 max-w-lg mx-auto">
+          Si cet article vous a parle, je suis disponible pour un premier echange
+          confidentiel et sans engagement.
+        </p>
+        <a
+          href="/contact"
+          class="inline-flex items-center px-8 py-4 bg-peach-500 text-white font-semibold rounded-full hover:bg-peach-600 transition-all hover:shadow-lg hover:shadow-peach-500/25"
+        >
+          Prendre rendez-vous
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

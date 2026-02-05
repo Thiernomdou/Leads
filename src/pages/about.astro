@@ -1,0 +1,202 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../data/site-config';
+---
+
+<BaseLayout
+  title="Mon approche - Therapie des TCA"
+  description="Decouvrez l'approche therapeutique de Dr. Sophie Martin, psychologue specialisee dans les troubles du comportement alimentaire a Lyon. TCC, pleine conscience et bienveillance."
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-offwhite via-cream-50 to-sky-50 py-16 sm:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="font-heading text-4xl sm:text-5xl font-bold text-warm-700 mb-6">
+        Mon approche therapeutique
+      </h1>
+      <p class="text-lg text-warm-500 max-w-2xl mx-auto">
+        Un accompagnement specialise, bienveillant et adapte a votre parcours unique.
+      </p>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="py-16 sm:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-2xl border border-cream-200 p-6 sticky top-24">
+            <div class="text-center mb-6">
+              <div class="w-20 h-20 bg-gradient-to-br from-peach-100 to-sky-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <span class="text-2xl" aria-hidden="true">&#128330;</span>
+              </div>
+              <h2 class="font-heading text-xl font-semibold text-warm-700">
+                {siteConfig.therapist.name}
+              </h2>
+              <p class="text-warm-400 text-sm">{siteConfig.therapist.title}</p>
+            </div>
+            <ul class="space-y-2 text-sm text-warm-500">
+              {siteConfig.therapist.specialties.map((s) => (
+                <li class="flex items-start gap-2">
+                  <svg class="w-4 h-4 text-sage-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {s}
+                </li>
+              ))}
+            </ul>
+            <div class="mt-6 pt-6 border-t border-cream-200">
+              <p class="text-xs text-warm-400">{siteConfig.therapist.credentials}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="lg:col-span-2 space-y-10">
+          <div>
+            <h2 class="font-heading text-2xl sm:text-3xl font-bold text-warm-700 mb-4">
+              Qui suis-je ?
+            </h2>
+            <p class="text-warm-600 leading-relaxed mb-4">
+              Je suis {siteConfig.therapist.name}, psychologue clinicienne diplomee, specialisee dans
+              l'accompagnement des troubles du comportement alimentaire (TCA). Installee a Lyon depuis
+              plus de 10 ans, je recois des adolescents et des adultes souffrant d'anorexie mentale,
+              de boulimie, d'hyperphagie boulimique et d'autres formes de souffrance alimentaire.
+            </p>
+            <p class="text-warm-600 leading-relaxed">
+              Ma conviction profonde est que chaque personne porte en elle les ressources necessaires
+              a sa guerison. Mon role est de vous accompagner pour les retrouver, a votre rythme,
+              dans un cadre securisant et sans jugement.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="font-heading text-2xl sm:text-3xl font-bold text-warm-700 mb-4">
+              La Therapie Cognitivo-Comportementale (TCC)
+            </h2>
+            <p class="text-warm-600 leading-relaxed mb-4">
+              La TCC est l'approche therapeutique la plus validee scientifiquement pour le traitement
+              des TCA. Elle repose sur l'idee que nos pensees, nos emotions et nos comportements sont
+              intimement lies, et qu'en modifiant certains schemas de pensee, nous pouvons transformer
+              nos comportements et notre bien-etre emotionnel.
+            </p>
+            <div class="bg-cream-50 rounded-2xl p-6 space-y-4">
+              <h3 class="font-heading text-lg font-semibold text-warm-700">
+                Concretement, la TCC permet de :
+              </h3>
+              <ul class="space-y-3">
+                <li class="flex items-start gap-3 text-warm-600">
+                  <span class="w-6 h-6 bg-peach-100 text-peach-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">1</span>
+                  <span>Identifier les pensees automatiques qui declenchent les comportements alimentaires problematiques</span>
+                </li>
+                <li class="flex items-start gap-3 text-warm-600">
+                  <span class="w-6 h-6 bg-peach-100 text-peach-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">2</span>
+                  <span>Questionner et assouplir les croyances rigides sur l'alimentation, le poids et le corps</span>
+                </li>
+                <li class="flex items-start gap-3 text-warm-600">
+                  <span class="w-6 h-6 bg-peach-100 text-peach-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">3</span>
+                  <span>Developper de nouvelles strategies de gestion des emotions</span>
+                </li>
+                <li class="flex items-start gap-3 text-warm-600">
+                  <span class="w-6 h-6 bg-peach-100 text-peach-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">4</span>
+                  <span>Restaurer progressivement une alimentation flexible et apaisee</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="font-heading text-2xl sm:text-3xl font-bold text-warm-700 mb-4">
+              La pleine conscience et l'alimentation intuitive
+            </h2>
+            <p class="text-warm-600 leading-relaxed mb-4">
+              En complement de la TCC, j'integre des techniques de pleine conscience (mindfulness)
+              et d'alimentation intuitive. Ces approches visent a :
+            </p>
+            <ul class="space-y-2 text-warm-600">
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-sky-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Reapprendre a ecouter les signaux de faim et de satiete
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-sky-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Retrouver le plaisir de manger sans culpabilite
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-sky-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Accueillir les emotions sans les fuir dans la nourriture
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-sky-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Developper une relation bienveillante avec son corps
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="font-heading text-2xl sm:text-3xl font-bold text-warm-700 mb-4">
+              Le deroulement d'un suivi
+            </h2>
+            <div class="space-y-6">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-peach-500 text-white rounded-full flex items-center justify-center font-semibold flex-shrink-0">1</div>
+                <div>
+                  <h3 class="font-semibold text-warm-700 mb-1">Premier rendez-vous</h3>
+                  <p class="text-warm-500 text-sm">Un espace d'ecoute pour comprendre votre situation, vos besoins et definir ensemble les objectifs du suivi. Sans engagement.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-peach-500 text-white rounded-full flex items-center justify-center font-semibold flex-shrink-0">2</div>
+                <div>
+                  <h3 class="font-semibold text-warm-700 mb-1">Evaluation et plan de soin</h3>
+                  <p class="text-warm-500 text-sm">Bilan approfondi et mise en place d'un plan therapeutique personnalise, adapte a votre rythme et a vos objectifs.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-peach-500 text-white rounded-full flex items-center justify-center font-semibold flex-shrink-0">3</div>
+                <div>
+                  <h3 class="font-semibold text-warm-700 mb-1">Suivi regulier</h3>
+                  <p class="text-warm-500 text-sm">Seances hebdomadaires de 45-50 minutes, avec des exercices pratiques entre les seances pour ancrer les apprentissages.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-peach-500 text-white rounded-full flex items-center justify-center font-semibold flex-shrink-0">4</div>
+                <div>
+                  <h3 class="font-semibold text-warm-700 mb-1">Consolidation</h3>
+                  <p class="text-warm-500 text-sm">Espacement progressif des seances et mise en place de strategies de prevention de la rechute pour maintenir les progres.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 sm:py-24 bg-gradient-to-r from-peach-500 to-peach-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="font-heading text-3xl sm:text-4xl font-bold text-white mb-6">
+        Pret(e) a faire le premier pas ?
+      </h2>
+      <p class="text-peach-100 text-lg mb-10 max-w-2xl mx-auto">
+        Contactez-moi pour un premier echange confidentiel et sans engagement.
+        Ensemble, nous trouverons le chemin qui vous convient.
+      </p>
+      <a
+        href="/contact"
+        class="inline-flex items-center px-8 py-4 bg-white text-peach-600 font-semibold rounded-full hover:bg-peach-50 transition-all"
+      >
+        Prendre rendez-vous
+      </a>
+    </div>
+  </section>
+</BaseLayout>

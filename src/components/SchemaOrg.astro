@@ -1,0 +1,142 @@
+---
+import { siteConfig } from '../data/site-config';
+
+interface Props {
+  type: 'homepage' | 'blog-post' | 'page';
+  title?: string;
+  description?: string;
+  publishDate?: string;
+  updatedDate?: string;
+  author?: string;
+  wordCount?: number;
+  slug?: string;
+}
+
+const { type, title, description, publishDate, updatedDate, author, wordCount, slug } = Astro.props;
+const currentUrl = Astro.url.href;
+
+function buildHomepageSchema() {
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'MedicalBusiness',
+      '@id': `${siteConfig.url}/#medical-business`,
+      name: siteConfig.name,
+      description: siteConfig.description,
+      url: siteConfig.url,
+      telephone: siteConfig.phone,
+      email: siteConfig.email,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: siteConfig.address.street,
+        addressLocality: siteConfig.address.city,
+        postalCode: siteConfig.address.postalCode,
+        addressCountry: siteConfig.address.country,
+      },
+      openingHoursSpecification: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: '09:00',
+        closes: '19:00',
+      },
+      priceRange: '$$',
+      medicalSpecialty: 'Psychiatric',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ProfessionalService',
+      '@id': `${siteConfig.url}/#professional-service`,
+      name: siteConfig.name,
+      description: siteConfig.description,
+      url: siteConfig.url,
+      provider: {
+        '@type': 'Person',
+        name: siteConfig.therapist.name,
+        jobTitle: siteConfig.therapist.title,
+      },
+      areaServed: {
+        '@type': 'City',
+        name: 'Lyon',
+      },
+      serviceType: siteConfig.therapist.specialties,
+    },
+    buildBreadcrumbSchema([{ name: 'Accueil', url: siteConfig.url }]),
+  ];
+}
+
+function buildBlogPostSchema() {
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: title,
+      description: description,
+      author: {
+        '@type': 'Person',
+        name: author || siteConfig.therapist.name,
+        jobTitle: siteConfig.therapist.title,
+      },
+      datePublished: publishDate,
+      dateModified: updatedDate || publishDate,
+      publisher: {
+        '@type': 'Organization',
+        name: siteConfig.name,
+        url: siteConfig.url,
+      },
+      mainEntityOfPage: currentUrl,
+      wordCount: wordCount,
+      inLanguage: 'fr-FR',
+    },
+    buildBreadcrumbSchema([
+      { name: 'Accueil', url: siteConfig.url },
+      { name: 'Blog', url: `${siteConfig.url}/blog` },
+      { name: title || '', url: currentUrl },
+    ]),
+  ];
+}
+
+function buildPageSchema() {
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: title,
+      description: description,
+      url: currentUrl,
+      inLanguage: 'fr-FR',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: siteConfig.name,
+        url: siteConfig.url,
+      },
+    },
+    buildBreadcrumbSchema([
+      { name: 'Accueil', url: siteConfig.url },
+      { name: title || '', url: currentUrl },
+    ]),
+  ];
+}
+
+function buildBreadcrumbSchema(items: { name: string; url: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+const schemas = type === 'homepage'
+  ? buildHomepageSchema()
+  : type === 'blog-post'
+    ? buildBlogPostSchema()
+    : buildPageSchema();
+---
+
+{schemas.map((schema) => (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+))}

@@ -1,0 +1,15 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminLeadsTable from '../../components/AdminLeadsTable';
+---
+
+<AdminLayout title="Dashboard">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-warm-700">Dashboard Leads</h1>
+    <p class="text-warm-400 text-sm mt-1">Suivi des demandes de contact par variante de formulaire</p>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-cream-200 p-6 sm:p-8">
+    <AdminLeadsTable client:load />
+  </div>
+</AdminLayout>

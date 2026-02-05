@@ -1,0 +1,38 @@
+---
+import AdminLoginForm from '../../components/AdminLoginForm';
+import '../../styles/global.css';
+
+const accessToken = Astro.cookies.get('sb-access-token')?.value;
+if (accessToken) {
+  return Astro.redirect('/admin');
+}
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Admin Login</title>
+  </head>
+  <body class="min-h-screen bg-warm-50 flex items-center justify-center px-4">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-8">
+        <h1 class="font-heading text-2xl font-bold text-warm-700">Administration</h1>
+        <p class="text-warm-400 text-sm mt-1">Connectez-vous pour acceder au dashboard</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-cream-200 p-8">
+        <AdminLoginForm client:load />
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: string;
+  noindex?: boolean;
+}
+
+import { siteConfig } from '../data/site-config';
+
+const {
+  title,
+  description,
+  canonical = Astro.url.href,
+  ogImage = '/og-default.png',
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title === siteConfig.shortName
+  ? title
+  : `${title} | ${siteConfig.shortName}`;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="author" content={siteConfig.therapist.name} />
+<link rel="canonical" href={canonical} />
+
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={new URL(ogImage, siteConfig.url).href} />
+<meta property="og:site_name" content={siteConfig.name} />
+<meta property="og:locale" content="fr_FR" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={new URL(ogImage, siteConfig.url).href} />
+
+<!-- Geo -->
+<meta name="geo.region" content="FR-69" />
+<meta name="geo.placename" content="Lyon" />
