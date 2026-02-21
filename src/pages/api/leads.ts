@@ -10,10 +10,10 @@ const variantLabels: Record<string, string> = {
 
 async function sendNotificationEmail(lead: Record<string, string | null>) {
   const apiKey = import.meta.env.RESEND_API_KEY;
-  const notifEmail = import.meta.env.NOTIFICATION_EMAIL;
+  const notifEmail = import.meta.env.NOTIFICATION_EMAIL || 'contact.kivio@gmail.com';
 
-  if (!apiKey || apiKey === 're_VOTRE_CLE_API_ICI' || !notifEmail) {
-    console.warn('Email notification skipped: RESEND_API_KEY or NOTIFICATION_EMAIL not configured');
+  if (!apiKey || apiKey === 're_VOTRE_CLE_API_ICI') {
+    console.warn('Email notification skipped: RESEND_API_KEY not configured');
     return;
   }
 
@@ -130,6 +130,17 @@ export const POST: APIRoute = async ({ request }) => {
         JSON.stringify({ error: 'Erreur lors de l\'enregistrement' }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    // Marquer la conversion dans form_starts (non-blocking)
+    if (email) {
+      supabase
+        .from('form_starts')
+        .update({ converted: true })
+        .eq('email', email)
+        .then(({ error: updateError }) => {
+          if (updateError) console.error('Error marking form_start conversion:', updateError);
+        });
     }
 
     // Send email notification (non-blocking - don't fail the request if email fails)

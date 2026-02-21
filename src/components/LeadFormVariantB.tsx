@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useRef, type FormEvent } from 'react';
 
 interface Props {
   sourcePage: string;
@@ -7,6 +7,24 @@ interface Props {
 export default function LeadFormVariantB({ sourcePage }: Props) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const formStartSent = useRef(false);
+  const [firstName, setFirstName] = useState('');
+  const [email, setEmail] = useState('');
+
+  function checkFormStart(name: string, mail: string) {
+    if (formStartSent.current || !name.trim() || !mail.trim()) return;
+    formStartSent.current = true;
+    fetch('/api/form-start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        first_name: name.trim(),
+        email: mail.trim(),
+        form_variant: 'B',
+        source_page: sourcePage,
+      }),
+    }).catch(() => {});
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -81,6 +99,8 @@ export default function LeadFormVariantB({ sourcePage }: Props) {
               id="first_name_b"
               name="first_name"
               required
+              value={firstName}
+              onChange={(e) => { setFirstName(e.target.value); checkFormStart(e.target.value, email); }}
               className="w-full px-4 py-3 bg-white border border-sky-200 rounded-xl text-warm-700 placeholder:text-warm-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
               placeholder="Votre prenom"
             />
@@ -109,6 +129,8 @@ export default function LeadFormVariantB({ sourcePage }: Props) {
             id="email_b"
             name="email"
             required
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); checkFormStart(firstName, e.target.value); }}
             className="w-full px-4 py-3 bg-white border border-sky-200 rounded-xl text-warm-700 placeholder:text-warm-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             placeholder="votre@email.com"
           />
