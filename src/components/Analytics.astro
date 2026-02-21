@@ -1,0 +1,143 @@
+<script is:inline>
+(function() {
+  // Skip tracking for admin pages
+  if (window.location.pathname.startsWith('/admin')) return;
+
+  var SESSION_KEY = 'analytics_session';
+  var SESSION_TIMEOUT = 30 * 60 * 1000; // 30 min
+
+  function getSession() {
+    try {
+      var raw = localStorage.getItem(SESSION_KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        if (Date.now() - s.ts < SESSION_TIMEOUT) {
+          s.ts = Date.now();
+          localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+          return s.id;
+        }
+      }
+    } catch(e) {}
+    var id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ id: id, ts: Date.now() }));
+    return id;
+  }
+
+  function getDeviceType() {
+    var w = window.innerWidth;
+    if (w < 768) return 'mobile';
+    if (w < 1024) return 'tablet';
+    return 'desktop';
+  }
+
+  function getUTM(name) {
+    try {
+      return new URLSearchParams(window.location.search).get('utm_' + name) || '';
+    } catch(e) { return ''; }
+  }
+
+  var sessionId = getSession();
+  var viewId = null;
+  var startTime = Date.now();
+  var maxScroll = 0;
+  var sectionsViewed = new Set();
+  var ctaClicked = null;
+
+  // POST: create page_view
+  fetch('/api/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      session_id: sessionId,
+      page_path: window.location.pathname,
+      referrer: document.referrer || '',
+      utm_source: getUTM('source'),
+      utm_medium: getUTM('medium'),
+      utm_campaign: getUTM('campaign'),
+      device_type: getDeviceType()
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) { if (d.id) viewId = d.id; })
+  .catch(function() {});
+
+  // Scroll depth
+  function getScrollPercent() {
+    var h = document.documentElement;
+    var scrollTop = window.scrollY || h.scrollTop;
+    var scrollHeight = h.scrollHeight - h.clientHeight;
+    if (scrollHeight <= 0) return 100;
+    return Math.min(100, Math.round((scrollTop / scrollHeight) * 100));
+  }
+
+  window.addEventListener('scroll', function() {
+    var pct = getScrollPercent();
+    if (pct > maxScroll) maxScroll = pct;
+  }, { passive: true });
+
+  // Sections visible (IntersectionObserver)
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var name = entry.target.getAttribute('data-section');
+          if (name) sectionsViewed.add(name);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('[data-section]').forEach(function(el) {
+      observer.observe(el);
+    });
+  }
+
+  // CTA clicks
+  document.addEventListener('click', function(e) {
+    var el = e.target.closest('[data-track]');
+    if (el) {
+      ctaClicked = el.getAttribute('data-track');
+      sendUpdate();
+    }
+  });
+
+  // Send update
+  function sendUpdate() {
+    if (!viewId) return;
+    var duration = Math.round((Date.now() - startTime) / 1000);
+    var payload = JSON.stringify({
+      id: viewId,
+      duration_seconds: duration,
+      scroll_depth: maxScroll,
+      sections_viewed: Array.from(sectionsViewed),
+      cta_clicked: ctaClicked
+    });
+
+    // Try fetch, fallback ignored
+    fetch('/api/track', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: payload
+    }).catch(function() {});
+  }
+
+  // Periodic update every 10s
+  var interval = setInterval(sendUpdate, 10000);
+
+  // Before unload: sendBeacon
+  window.addEventListener('beforeunload', function() {
+    clearInterval(interval);
+    if (!viewId) return;
+    var duration = Math.round((Date.now() - startTime) / 1000);
+    var payload = JSON.stringify({
+      id: viewId,
+      duration_seconds: duration,
+      scroll_depth: maxScroll,
+      sections_viewed: Array.from(sectionsViewed),
+      cta_clicked: ctaClicked
+    });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+    }
+  });
+})();
+</script>

@@ -46,7 +46,7 @@ const painPoints = [
   <Hero />
 
   <!-- Pain Points Section -->
-  <section class="py-16 sm:py-24 bg-offwhite">
+  <section data-section="pain-points" class="py-16 sm:py-24 bg-offwhite">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12 sm:mb-16">
         <h2 class="font-heading text-3xl sm:text-4xl font-bold text-warm-700 mb-4">
@@ -71,6 +71,7 @@ const painPoints = [
       <div class="text-center mt-12">
         <a
           href="/contact"
+          data-track="cta-premier-pas"
           class="inline-flex items-center px-8 py-4 bg-peach-500 text-white font-semibold rounded-full hover:bg-peach-600 transition-all hover:shadow-lg hover:shadow-peach-500/25"
         >
           Faire le premier pas
@@ -83,7 +84,7 @@ const painPoints = [
   </section>
 
   <!-- Approach Preview Section -->
-  <section class="py-16 sm:py-24 bg-cream-100">
+  <section data-section="approach" class="py-16 sm:py-24 bg-cream-100">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
@@ -150,7 +151,7 @@ const painPoints = [
   </section>
 
   <!-- Blog Preview Section -->
-  <section class="py-16 sm:py-24 bg-offwhite">
+  <section data-section="blog-preview" class="py-16 sm:py-24 bg-offwhite">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h2 class="font-heading text-3xl sm:text-4xl font-bold text-warm-700 mb-4">
         Comprendre les TCA
@@ -168,7 +169,7 @@ const painPoints = [
   </section>
 
   <!-- CTA Section -->
-  <section class="py-16 sm:py-24 bg-gradient-to-r from-peach-500 to-peach-600">
+  <section data-section="cta" class="py-16 sm:py-24 bg-gradient-to-r from-peach-500 to-peach-600">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h2 class="font-heading text-3xl sm:text-4xl font-bold text-white mb-6">
         Le premier pas est le plus courageux
@@ -180,6 +181,7 @@ const painPoints = [
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <a
           href="/contact"
+          data-track="cta-rdv"
           class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-white text-peach-600 font-semibold rounded-full hover:bg-peach-50 transition-all"
         >
           Prendre rendez-vous

@@ -29,7 +29,23 @@ interface FormStart {
   converted: boolean;
 }
 
-type Tab = 'leads' | 'form_starts';
+interface PageView {
+  id: string;
+  created_at: string;
+  session_id: string;
+  page_path: string;
+  referrer: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  device_type: string | null;
+  duration_seconds: number;
+  scroll_depth: number;
+  sections_viewed: string[];
+  cta_clicked: string | null;
+}
+
+type Tab = 'leads' | 'form_starts' | 'visitors';
 
 const variantLabels: Record<string, string> = {
   A: 'Decouverte',
@@ -64,6 +80,13 @@ function formatFullDate(dateStr: string) {
     hour: '2-digit',
     minute: '2-digit',
   });
+}
+
+function formatDuration(seconds: number) {
+  if (seconds < 60) return `${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}m${s > 0 ? ` ${s}s` : ''}`;
 }
 
 // ---- Lead Detail Modal ----
@@ -307,15 +330,127 @@ function FormStartDetailModal({ fs, onClose }: { fs: FormStart; onClose: () => v
   );
 }
 
+// ---- PageView Detail Modal ----
+function PageViewDetailModal({ pv, onClose }: { pv: PageView; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      <div
+        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="px-6 py-5 rounded-t-2xl bg-gradient-to-r from-violet-500 to-violet-400">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-white text-lg font-bold">{pv.page_path}</h2>
+              <p className="text-white/80 text-sm mt-0.5">{formatFullDate(pv.created_at)}</p>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-white/70 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex gap-2 mt-3">
+            <span className="px-2.5 py-1 bg-white/20 text-white text-xs font-medium rounded-full">
+              {pv.device_type || 'inconnu'}
+            </span>
+            <span className="px-2.5 py-1 bg-white/20 text-white text-xs font-medium rounded-full">
+              {formatDuration(pv.duration_seconds)}
+            </span>
+            <span className="px-2.5 py-1 bg-white/20 text-white text-xs font-medium rounded-full">
+              Scroll {pv.scroll_depth}%
+            </span>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-5 space-y-5">
+          {/* Session */}
+          <div>
+            <h3 className="text-xs font-semibold text-warm-400 uppercase tracking-wider mb-2">Session</h3>
+            <div className="bg-cream-50 rounded-xl px-4 py-3">
+              <p className="text-warm-700 text-xs font-mono break-all">{pv.session_id}</p>
+            </div>
+          </div>
+
+          {/* Sections viewed */}
+          {pv.sections_viewed && pv.sections_viewed.length > 0 && (
+            <div>
+              <h3 className="text-xs font-semibold text-warm-400 uppercase tracking-wider mb-2">Sections vues</h3>
+              <div className="flex flex-wrap gap-2">
+                {pv.sections_viewed.map((s) => (
+                  <span key={s} className="px-2.5 py-1 bg-violet-100 text-violet-700 text-xs font-medium rounded-full">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* CTA */}
+          {pv.cta_clicked && (
+            <div>
+              <h3 className="text-xs font-semibold text-warm-400 uppercase tracking-wider mb-2">CTA clique</h3>
+              <div className="bg-green-50 rounded-xl px-4 py-3">
+                <p className="text-sage-700 text-sm font-medium">{pv.cta_clicked}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Meta */}
+          <div>
+            <h3 className="text-xs font-semibold text-warm-400 uppercase tracking-wider mb-3">Informations</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-cream-50 rounded-xl px-3 py-2.5">
+                <p className="text-warm-400 text-xs">Referrer</p>
+                <p className="text-warm-700 text-sm font-medium mt-0.5 truncate">{pv.referrer || 'Direct'}</p>
+              </div>
+              <div className="bg-cream-50 rounded-xl px-3 py-2.5">
+                <p className="text-warm-400 text-xs">Appareil</p>
+                <p className="text-warm-700 text-sm font-medium mt-0.5">{pv.device_type || '-'}</p>
+              </div>
+              {pv.utm_source && (
+                <div className="bg-cream-50 rounded-xl px-3 py-2.5">
+                  <p className="text-warm-400 text-xs">UTM Source</p>
+                  <p className="text-warm-700 text-sm font-medium mt-0.5">{pv.utm_source}</p>
+                </div>
+              )}
+              {pv.utm_medium && (
+                <div className="bg-cream-50 rounded-xl px-3 py-2.5">
+                  <p className="text-warm-400 text-xs">UTM Medium</p>
+                  <p className="text-warm-700 text-sm font-medium mt-0.5">{pv.utm_medium}</p>
+                </div>
+              )}
+              {pv.utm_campaign && (
+                <div className="bg-cream-50 rounded-xl px-3 py-2.5">
+                  <p className="text-warm-400 text-xs">UTM Campaign</p>
+                  <p className="text-warm-700 text-sm font-medium mt-0.5">{pv.utm_campaign}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ---- Main Component ----
 export default function AdminLeadsTable() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [formStarts, setFormStarts] = useState<FormStart[]>([]);
+  const [pageViews, setPageViews] = useState<PageView[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
   const [tab, setTab] = useState<Tab>('leads');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [selectedFormStart, setSelectedFormStart] = useState<FormStart | null>(null);
+  const [selectedPageView, setSelectedPageView] = useState<PageView | null>(null);
 
   useEffect(() => {
     fetchAll();
@@ -323,9 +458,10 @@ export default function AdminLeadsTable() {
 
   async function fetchAll() {
     setLoading(true);
-    const [leadsRes, formStartsRes] = await Promise.all([
+    const [leadsRes, formStartsRes, pageViewsRes] = await Promise.all([
       supabase.from('leads').select('*').order('created_at', { ascending: false }),
       supabase.from('form_starts').select('*').order('created_at', { ascending: false }),
+      supabase.from('page_views').select('*').order('created_at', { ascending: false }).limit(500),
     ]);
 
     if (leadsRes.error) console.error('Error fetching leads:', leadsRes.error);
@@ -333,6 +469,9 @@ export default function AdminLeadsTable() {
 
     if (formStartsRes.error) console.error('Error fetching form_starts:', formStartsRes.error);
     else setFormStarts(formStartsRes.data || []);
+
+    if (pageViewsRes.error) console.error('Error fetching page_views:', pageViewsRes.error);
+    else setPageViews(pageViewsRes.data || []);
 
     setLoading(false);
   }
@@ -358,6 +497,25 @@ export default function AdminLeadsTable() {
     ? Math.round((formStartsConverted / formStartsTotal) * 100)
     : 0;
 
+  // Visitors stats
+  const today = new Date().toISOString().slice(0, 10);
+  const visitsToday = pageViews.filter((pv) => pv.created_at.slice(0, 10) === today).length;
+  const avgDuration = pageViews.length > 0
+    ? Math.round(pageViews.reduce((sum, pv) => sum + pv.duration_seconds, 0) / pageViews.length)
+    : 0;
+  const avgScroll = pageViews.length > 0
+    ? Math.round(pageViews.reduce((sum, pv) => sum + pv.scroll_depth, 0) / pageViews.length)
+    : 0;
+
+  // Top pages
+  const pageCounts: Record<string, number> = {};
+  pageViews.forEach((pv) => {
+    pageCounts[pv.page_path] = (pageCounts[pv.page_path] || 0) + 1;
+  });
+  const topPages = Object.entries(pageCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -377,6 +535,9 @@ export default function AdminLeadsTable() {
       )}
       {selectedFormStart && (
         <FormStartDetailModal fs={selectedFormStart} onClose={() => setSelectedFormStart(null)} />
+      )}
+      {selectedPageView && (
+        <PageViewDetailModal pv={selectedPageView} onClose={() => setSelectedPageView(null)} />
       )}
 
       {/* Conversion Stats */}
@@ -437,31 +598,55 @@ export default function AdminLeadsTable() {
         >
           Formulaires commences ({formStarts.length})
         </button>
-      </div>
-
-      {/* Filter */}
-      <div className="flex items-center gap-2 mb-6">
-        <span className="text-sm text-warm-500">Filtrer :</span>
-        {(['all', 'A', 'B', 'C'] as const).map((v) => (
-          <button
-            key={v}
-            onClick={() => setFilter(v)}
-            className={`px-3 py-1 text-sm rounded-full transition-colors ${
-              filter === v
-                ? 'bg-warm-700 text-white'
-                : 'bg-cream-100 text-warm-500 hover:bg-cream-200'
-            }`}
-          >
-            {v === 'all' ? 'Tous' : `Variante ${v}`}
-          </button>
-        ))}
         <button
-          onClick={fetchAll}
-          className="ml-auto px-3 py-1 text-sm bg-cream-100 text-warm-500 rounded-full hover:bg-cream-200 transition-colors"
+          onClick={() => setTab('visitors')}
+          className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${
+            tab === 'visitors'
+              ? 'border-violet-500 text-violet-600'
+              : 'border-transparent text-warm-400 hover:text-warm-600'
+          }`}
         >
-          Actualiser
+          Visiteurs ({pageViews.length})
         </button>
       </div>
+
+      {/* Filter (only for leads/form_starts tabs) */}
+      {tab !== 'visitors' && (
+        <div className="flex items-center gap-2 mb-6">
+          <span className="text-sm text-warm-500">Filtrer :</span>
+          {(['all', 'A', 'B', 'C'] as const).map((v) => (
+            <button
+              key={v}
+              onClick={() => setFilter(v)}
+              className={`px-3 py-1 text-sm rounded-full transition-colors ${
+                filter === v
+                  ? 'bg-warm-700 text-white'
+                  : 'bg-cream-100 text-warm-500 hover:bg-cream-200'
+              }`}
+            >
+              {v === 'all' ? 'Tous' : `Variante ${v}`}
+            </button>
+          ))}
+          <button
+            onClick={fetchAll}
+            className="ml-auto px-3 py-1 text-sm bg-cream-100 text-warm-500 rounded-full hover:bg-cream-200 transition-colors"
+          >
+            Actualiser
+          </button>
+        </div>
+      )}
+
+      {/* Refresh button for visitors tab */}
+      {tab === 'visitors' && (
+        <div className="flex justify-end mb-6">
+          <button
+            onClick={fetchAll}
+            className="px-3 py-1 text-sm bg-cream-100 text-warm-500 rounded-full hover:bg-cream-200 transition-colors"
+          >
+            Actualiser
+          </button>
+        </div>
+      )}
 
       {/* Leads Table */}
       {tab === 'leads' && (
@@ -584,6 +769,116 @@ export default function AdminLeadsTable() {
                             Non
                           </span>
                         )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Visitors Tab */}
+      {tab === 'visitors' && (
+        <>
+          {/* Visitor Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            <div className="bg-violet-50 rounded-xl border border-violet-200 p-4">
+              <p className="text-sm text-warm-400">Visites aujourd'hui</p>
+              <p className="text-2xl font-bold text-violet-600">{visitsToday}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-cream-200 p-4">
+              <p className="text-sm text-warm-400">Total visites</p>
+              <p className="text-2xl font-bold text-warm-700">{pageViews.length}</p>
+            </div>
+            <div className="bg-sky-50 rounded-xl border border-sky-200 p-4">
+              <p className="text-sm text-warm-400">Duree moyenne</p>
+              <p className="text-2xl font-bold text-sky-600">{formatDuration(avgDuration)}</p>
+            </div>
+            <div className="bg-green-50 rounded-xl border border-sage-400 p-4">
+              <p className="text-sm text-warm-400">Scroll moyen</p>
+              <p className="text-2xl font-bold text-sage-600">{avgScroll}%</p>
+            </div>
+          </div>
+
+          {/* Top Pages */}
+          {topPages.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-warm-500 mb-3">Pages les plus vues</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                {topPages.map(([path, count]) => (
+                  <div key={path} className="bg-cream-50 rounded-xl px-4 py-3 text-center">
+                    <p className="text-warm-700 text-sm font-medium truncate">{path}</p>
+                    <p className="text-warm-400 text-xs mt-1">{count} visite{count > 1 ? 's' : ''}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Page Views Table */}
+          {pageViews.length === 0 ? (
+            <div className="text-center py-12 text-warm-400">
+              Aucune visite enregistree pour le moment.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-cream-200">
+                    <th className="text-left py-3 px-4 text-warm-500 font-medium">Date</th>
+                    <th className="text-left py-3 px-4 text-warm-500 font-medium">Page</th>
+                    <th className="text-left py-3 px-4 text-warm-500 font-medium">Duree</th>
+                    <th className="text-left py-3 px-4 text-warm-500 font-medium">Scroll</th>
+                    <th className="text-left py-3 px-4 text-warm-500 font-medium">Sections</th>
+                    <th className="text-left py-3 px-4 text-warm-500 font-medium">Referrer</th>
+                    <th className="text-left py-3 px-4 text-warm-500 font-medium">Appareil</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pageViews.map((pv) => (
+                    <tr
+                      key={pv.id}
+                      onClick={() => setSelectedPageView(pv)}
+                      className="border-b border-cream-100 hover:bg-violet-50/50 cursor-pointer transition-colors group"
+                    >
+                      <td className="py-3 px-4 text-warm-600 whitespace-nowrap">
+                        {formatDate(pv.created_at)}
+                      </td>
+                      <td className="py-3 px-4 text-warm-700 font-medium group-hover:text-violet-600 transition-colors">
+                        {pv.page_path}
+                      </td>
+                      <td className="py-3 px-4 text-warm-600">
+                        {formatDuration(pv.duration_seconds)}
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-16 h-2 bg-cream-200 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-violet-500 rounded-full"
+                              style={{ width: `${pv.scroll_depth}%` }}
+                            />
+                          </div>
+                          <span className="text-warm-500 text-xs">{pv.scroll_depth}%</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-warm-500 text-xs max-w-32 truncate">
+                        {pv.sections_viewed && pv.sections_viewed.length > 0
+                          ? pv.sections_viewed.join(', ')
+                          : '-'}
+                      </td>
+                      <td className="py-3 px-4 text-warm-500 text-xs max-w-32 truncate">
+                        {pv.referrer || 'Direct'}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          pv.device_type === 'mobile' ? 'bg-peach-100 text-peach-700' :
+                          pv.device_type === 'tablet' ? 'bg-amber-100 text-amber-700' :
+                          'bg-sky-100 text-sky-700'
+                        }`}>
+                          {pv.device_type || '?'}
+                        </span>
                       </td>
                     </tr>
                   ))}
